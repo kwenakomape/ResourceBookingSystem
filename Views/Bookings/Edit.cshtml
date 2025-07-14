@@ -1,0 +1,67 @@
+﻿@model ResourceBookingSystem.Models.Booking
+
+@{
+    ViewData["Title"] = ViewContext.RouteData.Values["action"].ToString() + " Booking";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card animate-fade-in">
+            <div class="card-header bg-white border-bottom-0 pb-0">
+                <h4 class="mb-0">@ViewData["Title"]</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="@ViewContext.RouteData.Values["action"]">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="ResourceId" class="form-label"></label>
+                        <select asp-for="ResourceId" class="form-select" asp-items="ViewBag.ResourceId">
+                            <option value="">-- Select Resource --</option>
+                        </select>
+                        <span asp-validation-for="ResourceId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="StartTime" class="form-label"></label>
+                            <input asp-for="StartTime" class="form-control" type="datetime-local">
+                            <span asp-validation-for="StartTime" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EndTime" class="form-label"></label>
+                            <input asp-for="EndTime" class="form-control" type="datetime-local">
+                            <span asp-validation-for="EndTime" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="BookedBy" class="form-label"></label>
+                        <input asp-for="BookedBy" class="form-control" placeholder="Enter your name">
+                        <span asp-validation-for="BookedBy" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Purpose" class="form-label"></label>
+                        <textarea asp-for="Purpose" class="form-control" rows="3" placeholder="Enter purpose of booking"></textarea>
+                        <span asp-validation-for="Purpose" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

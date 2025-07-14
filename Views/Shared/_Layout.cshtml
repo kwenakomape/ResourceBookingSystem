@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Resource Booking</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom">
+                <div class="container-fluid">
+                    <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">
+                        <span class="text-primary">Resource</span>Booking
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Resources" asp-action="Index">
+                                    <i class="bi bi-box-seam me-1"></i>Resources
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Bookings" asp-action="Index">
+                                    <i class="bi bi-calendar-check me-1"></i>Bookings
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-secondary theme-toggle">
+                                <i class="bi bi-moon-stars"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="app-main">
+            <div class="container-fluid py-4">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <form id="anti-forgery-form">
+        @Html.AntiForgeryToken()
+    </form>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            const html = document.documentElement;
+
+            // Check for saved theme preference
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', currentTheme);
+
+            themeToggle.addEventListener('click', function() {
+                const newTheme = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+
+                // Update icon
+                const icon = this.querySelector('i');
+                icon.className = newTheme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+            });
+
+            // Set initial icon
+            const icon = themeToggle.querySelector('i');
+            icon.className = currentTheme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+        });
+    </script>
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+
+            const toast = document.createElement('div');
+            toast.className = `toast show align-items-center text-white bg-${type} border-0`;
+            toast.role = 'alert';
+            toast.id = toastId;
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                const bsToast = bootstrap.Toast.getOrCreateInstance(document.getElementById(toastId));
+                bsToast.hide();
+            }, 5000);
+        }
+
+        // Check for temp data message
+        document.addEventListener('DOMContentLoaded', function() {
+            const message = '@TempData["Message"]';
+            const messageType = '@TempData["MessageType"]' || 'success';
+
+            if (message) {
+                showToast(message, messageType);
+            }
+        });
+    </script>
+</body>
+</html>

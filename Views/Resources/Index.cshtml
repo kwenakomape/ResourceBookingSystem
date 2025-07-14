@@ -1,0 +1,149 @@
+﻿@model IEnumerable<ResourceBookingSystem.Models.Resource>
+
+@{
+    ViewData["Title"] = "Resources";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Resources</h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Add Resource
+    </a>
+</div>
+
+<div class="card animate-fade-in mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" name="search" placeholder="Search resources..." value="@Context.Request.Query["search"]">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" name="availability">
+                    <option value="">All Statuses</option>
+                    <option value="true" selected="@(Context.Request.Query["availability"] == "true")">Available</option>
+                    <option value="false" selected="@(Context.Request.Query["availability"] == "false")">Unavailable</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card animate-fade-in">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Capacity</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                        <i class="bi bi-box-seam"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">@item.Name</h6>
+                                        <small class="text-muted">@(item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description)</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.Location</td>
+                            <td>@item.Capacity</td>
+                            <td>
+                                <span class="badge bg-@(item.IsAvailable ? "success" : "danger") bg-opacity-10 text-@(item.IsAvailable ? "success" : "danger")">
+                                    @(item.IsAvailable ? "Available" : "Unavailable")
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger delete-resource-btn"
+                                            data-id="@item.Id"
+                                            data-name="@item.Name"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Resource</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="resourceName"></strong>? This action cannot be undone.</p>
+                <div id="deleteError" class="alert alert-danger mt-3" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.delete-resource-btn').click(function () {
+                var resourceId = $(this).data('id');
+                var resourceName = $(this).data('name');
+                $('#resourceName').text(resourceName);
+                $('#deleteError').hide().empty();
+
+                $('#confirmDeleteBtn').off('click').on('click', function () {
+                    $.ajax({
+                        url: '/Resources/Delete',
+                        type: 'POST',
+                        data: {
+                            id: resourceId,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                $('#deleteError').text(response.message).show();
+                            }
+                        },
+                        error: function (xhr) {
+                            $('#deleteError').text(xhr.responseJSON?.message || 'Error deleting resource').show();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

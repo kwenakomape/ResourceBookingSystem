@@ -1,0 +1,147 @@
+﻿@model IEnumerable<ResourceBookingSystem.Models.Booking>
+
+@{
+    ViewData["Title"] = "Bookings";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Bookings</h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>New Booking
+    </a>
+</div>
+
+<div class="card animate-fade-in mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="date" class="form-control" name="fromDate" value="@Context.Request.Query["fromDate"]">
+            </div>
+            <div class="col-md-4">
+                <input type="date" class="form-control" name="toDate" value="@Context.Request.Query["toDate"]">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card animate-fade-in">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Time</th>
+                        <th>Booked By</th>
+                        <th>Purpose</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                        <i class="bi bi-calendar-check"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">@item.Resource?.Name</h6>
+                                        <small class="text-muted">@item.Resource?.Location</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span>@item.StartTime.ToString("MMM dd, yyyy")</span>
+                                    <small class="text-muted">@item.StartTime.ToString("h:mm tt") - @item.EndTime.ToString("h:mm tt")</small>
+                                </div>
+                            </td>
+                            <td>@item.BookedBy</td>
+                            <td>@(item.Purpose.Length > 50 ? item.Purpose.Substring(0, 50) + "..." : item.Purpose)</td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger delete-booking-btn"
+                                            data-id="@item.Id"
+                                            data-resource="@item.Resource?.Name"
+                                            data-starttime="@item.StartTime.ToString("g")"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmCancelModal">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel the booking for <strong id="bookingResource"></strong> on <strong id="bookingStartTime"></strong>?</p>
+                <div id="cancelError" class="alert alert-danger mt-3" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">Yes, Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.delete-booking-btn').click(function () {
+                var bookingId = $(this).data('id');
+                var resourceName = $(this).data('resource');
+                var startTime = $(this).data('starttime');
+
+                $('#bookingResource').text(resourceName);
+                $('#bookingStartTime').text(startTime);
+                $('#cancelError').hide().empty();
+
+                $('#confirmCancelBtn').off('click').on('click', function () {
+                    $.ajax({
+                        url: '/Bookings/Delete',
+                        type: 'POST',
+                        data: {
+                            id: bookingId,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                $('#cancelError').text(response.message).show();
+                            }
+                        },
+                        error: function (xhr) {
+                            $('#cancelError').text(xhr.responseJSON?.message || 'Error cancelling booking').show();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

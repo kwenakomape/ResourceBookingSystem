@@ -1,0 +1,97 @@
+﻿@model ResourceBookingSystem.Models.Resource
+
+@{
+    ViewData["Title"] = "Resource Details";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card animate-fade-in">
+            <div class="card-header bg-white border-bottom-0 pb-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">@Model.Name</h4>
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">@Model.Description</dd>
+
+                    <dt class="col-sm-3">Location</dt>
+                    <dd class="col-sm-9">@Model.Location</dd>
+
+                    <dt class="col-sm-3">Capacity</dt>
+                    <dd class="col-sm-9">@Model.Capacity</dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-@(Model.IsAvailable ? "success" : "danger") bg-opacity-10 text-@(Model.IsAvailable ? "success" : "danger")">
+                            @(Model.IsAvailable ? "Available" : "Unavailable")
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white border-bottom-0 pb-0">
+                <h5 class="mb-0">Upcoming Bookings</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Bookings != null && Model.Bookings.Any(b => b.StartTime > DateTime.Now))
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Booked By</th>
+                                    <th>Purpose</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var booking in Model.Bookings.Where(b => b.StartTime > DateTime.Now).OrderBy(b => b.StartTime))
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <span>@booking.StartTime.ToString("MMM dd, yyyy")</span>
+                                                <small class="text-muted">@booking.StartTime.ToString("h:mm tt") - @booking.EndTime.ToString("h:mm tt")</small>
+                                            </div>
+                                        </td>
+                                        <td>@booking.BookedBy</td>
+                                        <td>@(booking.Purpose.Length > 30 ? booking.Purpose.Substring(0, 30) + "..." : booking.Purpose)</td>
+                                        <td class="text-end">
+                                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@booking.Id" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mb-0">
+                        No upcoming bookings for this resource.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
