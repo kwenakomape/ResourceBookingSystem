@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ResourceBookingSystem.Data;
 using ResourceBookingSystem.Models;
 
+
+// implement Resource CRUD actions
 namespace ResourceBookingSystem.Controllers
 {
     public class ResourcesController : Controller
