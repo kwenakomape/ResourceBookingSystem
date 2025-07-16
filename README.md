@@ -23,7 +23,7 @@ An ASP.NET Core MVC application for managing shared resources and bookings withi
 
 ### Prerequisites
 
-1. [.NET 6=9.0 SDK]
+1. [.NET 9.0 SDK]
 2. [Visual Studio 2022]
 3. SQL Server Express (or SQLite)
 
