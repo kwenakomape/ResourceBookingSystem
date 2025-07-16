@@ -15,12 +15,7 @@ namespace ResourceBookingSystem.Controllers
             _context = context;
         }
 
-        // GET: Bookings
-        //public async Task<IActionResult> Index()
-        //{
-        //    var applicationDbContext = _context.Bookings.Include(b => b.Resource);
-        //    return View(await applicationDbContext.ToListAsync());
-        //}
+        //feat: implement Booking CRUD with conflict detection
         public async Task<IActionResult> Index(string fromDate, string toDate)
         {
             var query = _context.Bookings.Include(b => b.Resource).AsQueryable();
@@ -52,6 +47,7 @@ namespace ResourceBookingSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ResourceId,StartTime,EndTime,BookedBy,Purpose")] Booking booking)
         {
+            
             bool hasConflict = await _context.Bookings
                 .AnyAsync(b => b.ResourceId == booking.ResourceId &&
                     ((booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
