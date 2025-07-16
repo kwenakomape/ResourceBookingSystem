@@ -2,7 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-//create Resource model (Id, Name, Description, etc.)
+/// <summary>
+/// Represents a bookable resource (e.g., meeting room, equipment)
+/// </summary>
 namespace ResourceBookingSystem.Models
 {
     public class Resource

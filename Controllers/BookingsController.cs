@@ -75,7 +75,7 @@ namespace ResourceBookingSystem.Controllers
             return View(booking);
         }
 
-        // GET: Bookings/Details/5
+        // GET: Bookings/Details/id
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -95,7 +95,7 @@ namespace ResourceBookingSystem.Controllers
             return View(booking);
         }
 
-        // GET: Bookings/Edit/5
+        // GET: Bookings/Edit/id
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -113,7 +113,7 @@ namespace ResourceBookingSystem.Controllers
             return View(booking);
         }
 
-        // POST: Bookings/Edit/5
+        // POST: Bookings/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ResourceId,StartTime,EndTime,BookedBy,Purpose")] Booking booking)
@@ -165,7 +165,7 @@ namespace ResourceBookingSystem.Controllers
             return View(booking);
         }
 
-        // GET: Bookings/Delete/5
+        // GET: Bookings/Delete/id
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -184,7 +184,7 @@ namespace ResourceBookingSystem.Controllers
             return View(booking);
         }
 
-        // POST: Bookings/Delete/5
+        // POST: Bookings/Delete/id
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)

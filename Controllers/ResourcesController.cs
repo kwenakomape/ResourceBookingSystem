@@ -4,24 +4,22 @@ using ResourceBookingSystem.Data;
 using ResourceBookingSystem.Models;
 
 
-// implement Resource CRUD actions
+// Handles CRUD operations for Resources
 
 namespace ResourceBookingSystem.Controllers
 {
     public class ResourcesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        
+        //Constructor with dependency injection
+      
         public ResourcesController(ApplicationDbContext context)
         {
             _context = context;
         }
+        //GET: Resources list with optional search/filter
 
-        // GET: Resources
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.Resources.ToListAsync());
-        //}
         public async Task<IActionResult> Index(string search, string availability)
         {
             var query = _context.Resources.AsQueryable();
@@ -42,7 +40,8 @@ namespace ResourceBookingSystem.Controllers
             return View(await query.ToListAsync());
         }
 
-        // GET: Resources/Details/5
+        // GET: Resource details including upcoming bookings
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -67,7 +66,7 @@ namespace ResourceBookingSystem.Controllers
             return View();
         }
 
-        // POST: Resources/Create
+        // POST: Resources/Create,  a user can creating a booking by submmiting relevant information
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Location,Capacity,IsAvailable")] Resource resource)
@@ -81,7 +80,7 @@ namespace ResourceBookingSystem.Controllers
             }
             return View(resource);
         }
-        // GET: Resources/Edit/5
+        // GET: Resources/Edit/id, use can view particular resource
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,7 +96,7 @@ namespace ResourceBookingSystem.Controllers
             return View(resource);
         }
 
-        // POST: Resources/Edit/5
+        // GET: Resources/Edit/id, user can edit their booking incase they make a mistake or want to reschedule
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Location,Capacity,IsAvailable")] Resource resource)
@@ -130,7 +129,7 @@ namespace ResourceBookingSystem.Controllers
             return View(resource);
         }
 
-        // GET: Resources/Delete/5
+        // GET: Resources/Delete/id, user can view deatils of the specific resource
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -148,9 +147,11 @@ namespace ResourceBookingSystem.Controllers
             return View(resource);
         }
 
-        // POST: Resources/Delete/5
+        // GET: Resources/Delete/id, user can delete resource
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]  // protect againts cors
+
+        // User cannot delete resource that has been booked
         public async Task<IActionResult> Delete(int id)
         {
             try

@@ -533,4 +533,5 @@ C:\Users\kwena\source\repos\ResourceBookingSystem\ResourceBookingSystem\obj\Debu
 C:\Users\kwena\source\repos\ResourceBookingSystem\ResourceBookingSystem\obj\Debug\net9.0\ResourceBookingSystem.pdb
 C:\Users\kwena\source\repos\ResourceBookingSystem\ResourceBookingSystem\obj\Debug\net9.0\ResourceBookingSystem.genruntimeconfig.cache
 C:\Users\kwena\source\repos\ResourceBookingSystem\ResourceBookingSystem\obj\Debug\net9.0\ref\ResourceBookingSystem.dll
-C:\Users\kwena\source\repos\ResourceBookingSystem\ResourceBookingSystem\obj\Debug\net9.0\compressed\znl9l1gyov-j2uwjmklzz.gz
+C:\Users\kwena\source\repos\ResourceBookingSystem\ResourceBookingSystem\obj\Debug\net9.0\ResourceBookingSystem.sourcelink.json
+C:\Users\kwena\source\repos\ResourceBookingSystem\ResourceBookingSystem\obj\Debug\net9.0\compressed\znl9l1gyov-6p2smzm2gd.gz

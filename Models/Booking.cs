@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+/// <summary>
+/// Represents a Booking Modal ,this is how it will be structured in the database
+/// </summary>
 namespace ResourceBookingSystem.Models
 {
     public class Booking

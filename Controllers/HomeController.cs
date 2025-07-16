@@ -9,15 +9,26 @@ using System.Threading.Tasks;
 
 namespace ResourceBookingSystem.Controllers
 {
+    /// <summary>
+    /// Handles the main application dashboard and core pages
+    /// </summary>
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        /// <summary>
+        /// Initializes a new instance of the HomeController with database context
+        /// </summary>
+        
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Displays the main dashboard view with:
+        /// - Today's bookings
+        /// - Upcoming bookings (next 7 days)
+        /// - Available resources
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var today = DateTime.Today;
@@ -52,7 +63,9 @@ namespace ResourceBookingSystem.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// Handles application errors with customizable error view
+        /// </summary>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

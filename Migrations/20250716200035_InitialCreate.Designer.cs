@@ -12,7 +12,7 @@ using ResourceBookingSystem.Data;
 namespace ResourceBookingSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250716111100_InitialCreate")]
+    [Migration("20250716200035_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

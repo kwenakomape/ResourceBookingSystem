@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResourceBookingSystem.Models;
-
-// configure SQL Server with EF Core
+/// <summary>
+/// Database context for Entity Framework and Core configure SQL Server 
+/// </summary>
+// 
 namespace ResourceBookingSystem.Data
 {
     public class ApplicationDbContext : DbContext
